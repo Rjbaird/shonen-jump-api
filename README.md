@@ -1,0 +1,1 @@
+# shonen-jump-api
