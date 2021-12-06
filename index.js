@@ -57,20 +57,19 @@ app.get('/schedule', (req, res) => {
             table_row.each((i, e) => {
                 let row = $(e).text()
                 let title = row.split(',', 1)
-                let most_recent_chapter = row.match(chapter_regex)
-                let num_of_chapters = `${most_recent_chapter}`.match(chapter_num_regex)
+                let upcoming_chapter = row.match(chapter_regex)
+                let num_of_chapters = `${upcoming_chapter}`.match(chapter_num_regex)
                 let next_chapter_release_date = row.match(next_release_regex)
                 const chapter_object = {
                     'title': `${title}`,
                     'chapter_release': parseInt(num_of_chapters),
-                    'most_recent_chapter': `${most_recent_chapter}`,
+                    'upcoming_chapter': `${upcoming_chapter}`,
                     'next_chapter_release_date': `${next_chapter_release_date}`,
                 }
                 chapterReleases[i] = chapter_object;
             })
             chapterReleases.shift()
             chapterReleases.pop()
-            // console.log(chapterReleases)
             res.json(chapterReleases)
         }).catch(err => console.log(err))
 
