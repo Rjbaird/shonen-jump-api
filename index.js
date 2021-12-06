@@ -14,7 +14,7 @@ app.get('/', (req, res) => {
     res.json('API Homepage')
 })
 
-app.get('/all', (req, res) => {
+app.get('/all', async (req, res) => {
     const url = 'https://www.viz.com/shonenjump'
     axios(url)
         .then(response => {
@@ -43,7 +43,7 @@ app.get('/all', (req, res) => {
 
 })
 
-app.get('/schedule', (req, res) => {
+app.get('/schedule', async (req, res) => {
     const url = 'https://www.viz.com/shonen-jump-chapter-schedule'
     axios(url)
         .then(response => {
