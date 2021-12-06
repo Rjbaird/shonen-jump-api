@@ -1,8 +1,9 @@
 
 # Shonen Jump API
 ![](https://img.shields.io/github/package-json/v/Rjbaird/shonen-jump-api?style=for-the-badge)
-![Express](https://img.shields.io/npm/v/express?color=gre&label=Express&logo=Express&style=for-the-badge)
-![Node.js](https://img.shields.io/npm/v/nodemon?color=gre&label=Nodemon&logo=nodemon&style=for-the-badge)
+![Node.js](https://img.shields.io/npm/v/node?color=%23339933&label=Node.js&logo=Node.js&style=for-the-badge)
+![Express](https://img.shields.io/npm/v/express?color=000000&label=Express&logo=Express&style=for-the-badge)
+![Nodemon](https://img.shields.io/npm/v/nodemon?color=76D04B&label=Nodemon&logo=nodemon&style=for-the-badge)
 
 An unofficial REST API showing data about English translations from [Weekly Shonen Jump](https://www.viz.com/shonenjump).
 
