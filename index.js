@@ -11,7 +11,15 @@ const app = express();
 const manga_list = [];
 
 app.get('/', (req, res) => {
-    res.json('API Homepage')
+    const welcome = {
+        title: 'Welcome to the unofficial shonen-jump-api',
+        description:'An API showing data about English translations of Weekly Shonen Jump',
+        repo: 'https://github.com/Rjbaird/shonen-jump-api',
+        help: 'https://github.com/Rjbaird/shonen-jump-api/issues',
+        RapidAPI: 'https://rapidapi.com/Rjbaird/api/unofficial-shonen-jump',
+        endpoints:['/all', '/schedule']
+    }
+    res.json(welcome)
 })
 
 app.get('/all', async (req, res) => {
