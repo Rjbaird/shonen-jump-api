@@ -17,7 +17,7 @@ app.get('/', (req, res) => {
         repo: 'https://github.com/Rjbaird/shonen-jump-api',
         help: 'https://github.com/Rjbaird/shonen-jump-api/issues',
         RapidAPI: 'https://rapidapi.com/Rjbaird/api/unofficial-shonen-jump',
-        endpoints:['/all', '/schedule']
+        endpoints:['/all', '/schedule', '/manga/:mangaID']
     }
     res.json(welcome)
 })
