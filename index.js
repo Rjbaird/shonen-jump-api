@@ -33,14 +33,14 @@ app.get('/all', async (req, res) => {
             all_manga.each((i, e) => {
                 let title = $(e).find('img').attr('alt');
                 let manga_link = $(e).find('a').attr('href');
-                let manga_slug = manga_link.replace('/shonenjump/chapters/', '').trim()
+                let mangaID = manga_link.replace('/shonenjump/chapters/', '').trim()
                 let newest_chapter_link = $(e).find('.o_inner-link').attr('href');
                 let latest_chapter_number = $(e).find('span').first().text().trim().match(chapter_num_regex)
                 let latest_chapter_date = $(e).find('.style-italic').first().text().trim();
                 const viz = 'https://www.viz.com'
                 const chapter_object = {
                     'title': `${title}`,
-                    'manga_slug': `${manga_slug}`,
+                    'mangaID': `${mangaID}`,
                     'manga_link': `${viz}${manga_link}`,
                     'newest_chapter_link': `${viz}${newest_chapter_link}`,
                     'latest_chapter_date': parseChapterDate(latest_chapter_date),
