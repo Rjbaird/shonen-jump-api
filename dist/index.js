@@ -22,7 +22,7 @@ const app = (0, express_1.default)();
 const limiter = (0, express_rate_limit_1.default)({
     windowMs: 15 * 60 * 1000,
     max: 100,
-    message: "Too many accounts created from this IP, please try again after 15 minutes"
+    message: 'Too many accounts created from this IP, please try again after 15 minutes',
 });
 // Global Middleware
 app.use(express_1.default.json());
@@ -37,9 +37,9 @@ const welcomeMessage = {
     repo: 'https://github.com/Rjbaird/shonen-jump-api',
     help: 'https://github.com/Rjbaird/shonen-jump-api/issues',
     RapidAPI: 'https://rapidapi.com/Rjbaird/api/unofficial-shonen-jump',
-    endpoints: ['/all', '/schedule', '/manga/:mangaID']
+    endpoints: ['/all', '/schedule', '/manga/:mangaID'],
 };
-const CurrentUnixDate = () => {
+const currentUnixDate = () => {
     const date = new Date();
     const options = { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'UTC' };
     const todayString = date.toLocaleString('en-US', options);
@@ -63,16 +63,17 @@ const getAllManga = () => __awaiter(void 0, void 0, void 0, function* () {
             let latest_chapter_date = $(e).find('.style-italic').first().text().trim();
             const viz = 'https://www.viz.com';
             const chapter_object = {
-                'title': `${title}`,
-                'mangaID': `${mangaID}`,
-                'manga_link': `${viz}${manga_link}`,
-                'newest_chapter_link': `${viz}${newest_chapter_link}`,
-                'latest_chapter_date': parseChapterDate(latest_chapter_date),
-                'latest_chapter_number': parseChapterNumber(latest_chapter_number),
+                title: `${title}`,
+                mangaID: `${mangaID}`,
+                manga_link: `${viz}${manga_link}`,
+                newest_chapter_link: `${viz}${newest_chapter_link}`,
+                latest_chapter_date: parseChapterDate(latest_chapter_date),
+                latest_chapter_number: parseChapterNumber(latest_chapter_number),
             };
             manga_list[i] = chapter_object;
         });
-    }).catch(err => console.log(err));
+    })
+        .catch(err => console.log(err));
     console.log('Manga List Updated');
 });
 const getUpcomingReleases = () => __awaiter(void 0, void 0, void 0, function* () {
@@ -93,20 +94,21 @@ const getUpcomingReleases = () => __awaiter(void 0, void 0, void 0, function* ()
             let next_chapter_release_date = row.match(next_release_regex);
             let unix_release = Date.parse(`${next_chapter_release_date}`);
             const chapter_object = {
-                'title': `${title}`,
-                'chapter_release': parseInt(num_of_chapters),
-                'upcoming_chapter': `${upcoming_chapter}`,
-                'release_date': `${next_chapter_release_date}`
+                title: `${title}`,
+                chapter_release: parseInt(num_of_chapters),
+                upcoming_chapter: `${upcoming_chapter}`,
+                release_date: `${next_chapter_release_date}`,
             };
             chapterReleases[i] = chapter_object;
         });
         chapterReleases.shift();
         chapterReleases.pop();
-    }).catch(err => console.log(err));
-    console.log("Schedule Updated");
+    })
+        .catch(err => console.log(err));
+    console.log('Schedule Updated');
 });
 // Update memory on server start
-CurrentUnixDate();
+currentUnixDate();
 getAllManga();
 getUpcomingReleases();
 app.get('/', (req, res) => {
@@ -131,29 +133,29 @@ app.get('/manga/:mangaID', (req, res) => __awaiter(void 0, void 0, void 0, funct
         let author = $('.disp-bl--bm').text().replace('Created by ', '');
         let description = $('h4', '.mar-t-rg').text();
         let next_release_date = $('.section_future_chapter').text().trim();
-        $('.o_property-link')
-            .each((i, e) => {
+        $('.o_property-link').each((i, e) => {
             let rec_title = $(e).attr('rel');
             let rec_link = $(e).attr('href');
             let rec_slug = rec_link === null || rec_link === void 0 ? void 0 : rec_link.replace('/shonenjump/chapters/', '');
             let recommendation_obj = {
-                'title': rec_title,
-                'title_slug': rec_slug,
-                'link': `https://www.viz.com${rec_link}`,
+                title: rec_title,
+                title_slug: rec_slug,
+                link: `https://www.viz.com${rec_link}`,
             };
             recommended_manga[i] = recommendation_obj;
         });
         recommended_manga.join(', ');
         const manga_object = {
-            'title': `${title}`,
-            'header_image': `${header_image}`,
-            'author': `${author}`,
-            'description': `${description}`,
-            'next_release_countdown': parseChapterDate(next_release_date),
-            'recommended_manga': recommended_manga,
+            title: `${title}`,
+            header_image: `${header_image}`,
+            author: `${author}`,
+            description: `${description}`,
+            next_release_countdown: parseChapterDate(next_release_date),
+            recommended_manga: recommended_manga,
         };
         res.send(manga_object);
-    }).catch(err => console.log(err));
+    })
+        .catch(err => console.log(err));
 }));
 const parseChapterNumber = (recent_chapter) => {
     if (recent_chapter == null) {
