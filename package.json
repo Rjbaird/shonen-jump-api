@@ -6,9 +6,7 @@
   "scripts": {
     "start": "npx tsc && node build/index.js",
     "build": "tsc",
-    "dev": "nodemon src/index.ts",
-    "deploy": "git push heroku master"
-
+    "dev": "nodemon src/index.ts"
   },
   "author": "Ryan Baird",
   "license": "ISC",
