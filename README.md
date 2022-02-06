@@ -24,8 +24,12 @@ An unofficial REST API showing data about English translations from [Weekly Shon
 
 ## Development Roadmap
 
+- Add database (MongoDB?)
 - Add individual chapter links
 - Search by title
+- Search by author
+- Fillter upcoming release schedule
+- Add web only tag (due to App store policies)
 - ~~Add manga slugs~~
 - ~~Add cover images~~
 - ~~Add description~~
