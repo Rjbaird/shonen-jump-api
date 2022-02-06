@@ -20,7 +20,7 @@ const app = (0, express_1.default)();
 const manga_list = [];
 const welcome = {
     title: 'Welcome to the unofficial shonen-jump-api',
-    description: 'An API showing data about English translations of Weekly Shonen Jump',
+    description: 'An API showing data about English translations of Weekly Shonen Jump available on Viz.com',
     repo: 'https://github.com/Rjbaird/shonen-jump-api',
     help: 'https://github.com/Rjbaird/shonen-jump-api/issues',
     RapidAPI: 'https://rapidapi.com/Rjbaird/api/unofficial-shonen-jump',
