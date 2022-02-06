@@ -3,7 +3,8 @@
 ![Version](https://img.shields.io/github/package-json/v/Rjbaird/shonen-jump-api?style=for-the-badge)
 ![Node.js](https://img.shields.io/npm/v/node?color=%23339933&label=Node.js&logo=Node.js&style=for-the-badge)
 ![Express](https://img.shields.io/npm/v/express?color=000000&label=Express&logo=Express&style=for-the-badge)
-![Nodemon](https://img.shields.io/npm/v/nodemon?color=76D04B&label=Nodemon&logo=nodemon&style=for-the-badge)
+![Typescript](https://img.shields.io/npm/v/typescript?color=000000&label=Typescript&logo=Typescript&style=for-the-badge)
+
 
 
 An unofficial REST API showing data about English translations from [Weekly Shonen Jump](https://www.viz.com/shonenjump).
@@ -12,6 +13,7 @@ An unofficial REST API showing data about English translations from [Weekly Shon
 
 - [Node.js](https://nodejs.org/en/)
 - [Express](https://expressjs.com/)
+- [TypeScript](https://www.typescriptlang.org/)
 - [Axios](https://axios-http.com/)
 - [cheerio](https://cheerio.js.org/)
 - [Heroku](https://www.heroku.com/home)
