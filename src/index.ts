@@ -18,9 +18,10 @@ app.use(helmet());
 app.use(limiter);
 
 // Server Memory
-const mangaList: object[] = [];
-const chapterSchedule: object[] = [];
+let mangaList: object[] = [];
+let chapterSchedule: object[] = [];
 
+// Welcome Message
 const welcomeMessage = {
   title: 'Welcome to the unofficial shonen-jump-api',
   description: 'An API showing data about English translations of Weekly Shonen Jump available on Viz.com',
@@ -30,6 +31,7 @@ const welcomeMessage = {
   endpoints: ['/all', '/schedule', '/manga/:mangaID'],
 };
 
+// Utility Functions
 const currentUnixDate = () => {
   const date = new Date();
   const options: Intl.DateTimeFormatOptions = { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'UTC' };
@@ -38,6 +40,21 @@ const currentUnixDate = () => {
   return todayUnix;
 };
 
+const parseChapterNumber = (recent_chapter: RegExpMatchArray | null) => {
+  if (recent_chapter == null) {
+    return 'Special One-Shot!';
+  }
+  return recent_chapter.toString();
+};
+
+const parseChapterDate = (date_string: string) => {
+  if (date_string == '' || date_string == null) {
+    return 'NA';
+  }
+  return date_string;
+};
+
+// Data Collection Functions
 const getAllManga = async () => {
   const url = 'https://www.viz.com/shonenjump';
   axios(url)
@@ -59,7 +76,7 @@ const getAllManga = async () => {
           .match(chapterNumberRegex);
         let latestChapterDate = $(e).find('.style-italic').first().text().trim();
         const viz = 'https://www.viz.com';
-        const chapter_object = {
+        const chapterObject = {
           title: title,
           mangaID: mangaID,
           mangaLink: `${viz}${mangaLink}`,
@@ -67,7 +84,7 @@ const getAllManga = async () => {
           latestChapterDate: parseChapterDate(latestChapterDate),
           latestChapterNumber: parseChapterNumber(latestChapterNumber),
         };
-        mangaList[i] = chapter_object;
+        mangaList.push(chapterObject);
       });
     })
     .catch(err => console.log(err));
@@ -91,14 +108,14 @@ const getUpcomingReleases = async (date: number) => {
         let numOfChapters = `${`${upcomingChapter}`.match(chapterNumberRegex)}`;
         let nextChapterReleaseDate = `${row.match(nextReleaseRegex)}`;
         let unixReleaseDate = Date.parse(nextChapterReleaseDate);
-        const chapter_object = {
+        const chapterObject = {
           title: title,
           chapterRelease: parseInt(numOfChapters),
           upcomingChapter: upcomingChapter,
           release_date: nextChapterReleaseDate,
         };
         if (unixReleaseDate >= date) {
-          return (chapterSchedule[i] = chapter_object);
+          return chapterSchedule.push(chapterObject);
         }
       });
       chapterSchedule.shift(); // Remove table headers
@@ -113,6 +130,7 @@ const today = currentUnixDate();
 getAllManga();
 getUpcomingReleases(today);
 
+// API Routes
 app.get('/', (req: Request, res: Response) => {
   res.send(welcomeMessage);
 });
@@ -122,8 +140,7 @@ app.get('/all', async (req: Request, res: Response) => {
 });
 
 app.get('/schedule', async (req: Request, res: Response) => {
-  const result = chapterSchedule.filter(x => x !== null);
-  res.send(result);
+  res.send(chapterSchedule);
 });
 
 app.get('/manga/:mangaID', async (req: Request<{ mangaID: 'string' }>, res: Response) => {
@@ -163,19 +180,5 @@ app.get('/manga/:mangaID', async (req: Request<{ mangaID: 'string' }>, res: Resp
     })
     .catch(err => console.log(err));
 });
-
-const parseChapterNumber = (recent_chapter: RegExpMatchArray | null) => {
-  if (recent_chapter == null) {
-    return 'Special One-Shot!';
-  }
-  return recent_chapter.toString();
-};
-
-const parseChapterDate = (date_string: string) => {
-  if (date_string == '' || date_string == null) {
-    return 'NA';
-  }
-  return date_string;
-};
 
 app.listen(PORT, (): void => console.log(`Server running at http://localhost:${PORT}`));

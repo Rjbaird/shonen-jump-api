@@ -29,8 +29,9 @@ app.use(express_1.default.json());
 app.use((0, helmet_1.default)());
 app.use(limiter);
 // Server Memory
-const manga_list = [];
-const chapterReleases = [];
+let mangaList = [];
+let chapterSchedule = [];
+// Welcome Message
 const welcomeMessage = {
     title: 'Welcome to the unofficial shonen-jump-api',
     description: 'An API showing data about English translations of Weekly Shonen Jump available on Viz.com',
@@ -39,6 +40,7 @@ const welcomeMessage = {
     RapidAPI: 'https://rapidapi.com/Rjbaird/api/unofficial-shonen-jump',
     endpoints: ['/all', '/schedule', '/manga/:mangaID'],
 };
+// Utility Functions
 const currentUnixDate = () => {
     const date = new Date();
     const options = { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'UTC' };
@@ -46,117 +48,6 @@ const currentUnixDate = () => {
     const todayUnix = Date.parse(todayString);
     return todayUnix;
 };
-const getAllManga = () => __awaiter(void 0, void 0, void 0, function* () {
-    const url = 'https://www.viz.com/shonenjump';
-    (0, axios_1.default)(url)
-        .then(response => {
-        const html = response.data;
-        const $ = cheerio_1.default.load(html);
-        let all_manga = $('.o_sortable');
-        let chapter_num_regex = /\d+/g;
-        all_manga.each((i, e) => {
-            let title = $(e).find('img').attr('alt');
-            let manga_link = $(e).find('a').attr('href');
-            let mangaID = manga_link === null || manga_link === void 0 ? void 0 : manga_link.replace('/shonenjump/chapters/', '').trim();
-            let newest_chapter_link = $(e).find('.o_inner-link').attr('href');
-            let latest_chapter_number = $(e).find('span').first().text().trim().match(chapter_num_regex);
-            let latest_chapter_date = $(e).find('.style-italic').first().text().trim();
-            const viz = 'https://www.viz.com';
-            const chapter_object = {
-                title: `${title}`,
-                mangaID: `${mangaID}`,
-                manga_link: `${viz}${manga_link}`,
-                newest_chapter_link: `${viz}${newest_chapter_link}`,
-                latest_chapter_date: parseChapterDate(latest_chapter_date),
-                latest_chapter_number: parseChapterNumber(latest_chapter_number),
-            };
-            manga_list[i] = chapter_object;
-        });
-    })
-        .catch(err => console.log(err));
-    console.log('Manga List Updated');
-});
-const getUpcomingReleases = () => __awaiter(void 0, void 0, void 0, function* () {
-    const url = 'https://www.viz.com/shonen-jump-chapter-schedule';
-    (0, axios_1.default)(url)
-        .then(response => {
-        const html = response.data;
-        const $ = cheerio_1.default.load(html);
-        let table_row = $('tr');
-        let chapter_regex = /Ch\.\s\d+/g;
-        let chapter_num_regex = /\d+/g;
-        let next_release_regex = /\w\w\w,\s\w\w\w\s\d+/g;
-        table_row.each((i, e) => {
-            let row = $(e).text();
-            let title = row.split(',', 1);
-            let upcoming_chapter = row.match(chapter_regex);
-            let num_of_chapters = `${upcoming_chapter}`.match(chapter_num_regex);
-            let next_chapter_release_date = row.match(next_release_regex);
-            let unix_release = Date.parse(`${next_chapter_release_date}`);
-            const chapter_object = {
-                title: `${title}`,
-                chapter_release: parseInt(num_of_chapters),
-                upcoming_chapter: `${upcoming_chapter}`,
-                release_date: `${next_chapter_release_date}`,
-            };
-            chapterReleases[i] = chapter_object;
-        });
-        chapterReleases.shift();
-        chapterReleases.pop();
-    })
-        .catch(err => console.log(err));
-    console.log('Schedule Updated');
-});
-// Update memory on server start
-currentUnixDate();
-getAllManga();
-getUpcomingReleases();
-app.get('/', (req, res) => {
-    res.send(welcomeMessage);
-});
-app.get('/all', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    res.send(manga_list);
-}));
-app.get('/schedule', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    res.send(chapterReleases);
-}));
-app.get('/manga/:mangaID', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { mangaID } = req.params;
-    const url = `https://www.viz.com/shonenjump/chapters/${mangaID}`;
-    (0, axios_1.default)(url)
-        .then(response => {
-        const html = response.data;
-        const $ = cheerio_1.default.load(html);
-        let recommended_manga = [];
-        let title = $('#series-intro').find('h2').text();
-        let header_image = $('.o_hero-media').attr('src');
-        let author = $('.disp-bl--bm').text().replace('Created by ', '');
-        let description = $('h4', '.mar-t-rg').text();
-        let next_release_date = $('.section_future_chapter').text().trim();
-        $('.o_property-link').each((i, e) => {
-            let rec_title = $(e).attr('rel');
-            let rec_link = $(e).attr('href');
-            let rec_slug = rec_link === null || rec_link === void 0 ? void 0 : rec_link.replace('/shonenjump/chapters/', '');
-            let recommendation_obj = {
-                title: rec_title,
-                title_slug: rec_slug,
-                link: `https://www.viz.com${rec_link}`,
-            };
-            recommended_manga[i] = recommendation_obj;
-        });
-        recommended_manga.join(', ');
-        const manga_object = {
-            title: `${title}`,
-            header_image: `${header_image}`,
-            author: `${author}`,
-            description: `${description}`,
-            next_release_countdown: parseChapterDate(next_release_date),
-            recommended_manga: recommended_manga,
-        };
-        res.send(manga_object);
-    })
-        .catch(err => console.log(err));
-}));
 const parseChapterNumber = (recent_chapter) => {
     if (recent_chapter == null) {
         return 'Special One-Shot!';
@@ -169,4 +60,124 @@ const parseChapterDate = (date_string) => {
     }
     return date_string;
 };
+// Data Collection Functions
+const getAllManga = () => __awaiter(void 0, void 0, void 0, function* () {
+    const url = 'https://www.viz.com/shonenjump';
+    (0, axios_1.default)(url)
+        .then(response => {
+        const html = response.data;
+        const $ = cheerio_1.default.load(html);
+        let allManga = $('.o_sortable');
+        let chapterNumberRegex = /\d+/g;
+        allManga.each((i, e) => {
+            let title = `${$(e).find('img').attr('alt')}`;
+            let mangaLink = `${$(e).find('a').attr('href')}`;
+            let mangaID = mangaLink.replace('/shonenjump/chapters/', '').trim();
+            let newestChapterLink = `${$(e).find('.o_inner-link').attr('href')}`;
+            let latestChapterNumber = $(e)
+                .find('span')
+                .first()
+                .text()
+                .trim()
+                .match(chapterNumberRegex);
+            let latestChapterDate = $(e).find('.style-italic').first().text().trim();
+            const viz = 'https://www.viz.com';
+            const chapterObject = {
+                title: title,
+                mangaID: mangaID,
+                mangaLink: `${viz}${mangaLink}`,
+                newestChapterLink: `${viz}${newestChapterLink}`,
+                latestChapterDate: parseChapterDate(latestChapterDate),
+                latestChapterNumber: parseChapterNumber(latestChapterNumber),
+            };
+            mangaList.push(chapterObject);
+        });
+    })
+        .catch(err => console.log(err));
+    console.log('Manga List Updated');
+});
+const getUpcomingReleases = (date) => __awaiter(void 0, void 0, void 0, function* () {
+    const url = 'https://www.viz.com/shonen-jump-chapter-schedule';
+    (0, axios_1.default)(url)
+        .then(response => {
+        const html = response.data;
+        const $ = cheerio_1.default.load(html);
+        let table_row = $('tr');
+        let chapterRegex = /Ch\.\s\d+/g;
+        let chapterNumberRegex = /\d+/g;
+        let nextReleaseRegex = /\w\w\w,\s\w\w\w\s\d+/g;
+        table_row.each((i, e) => {
+            let row = $(e).text();
+            let title = `${row.split(',', 1)}`;
+            let upcomingChapter = `${row.match(chapterRegex)}`;
+            let numOfChapters = `${`${upcomingChapter}`.match(chapterNumberRegex)}`;
+            let nextChapterReleaseDate = `${row.match(nextReleaseRegex)}`;
+            let unixReleaseDate = Date.parse(nextChapterReleaseDate);
+            const chapterObject = {
+                title: title,
+                chapterRelease: parseInt(numOfChapters),
+                upcomingChapter: upcomingChapter,
+                release_date: nextChapterReleaseDate,
+            };
+            if (unixReleaseDate >= date) {
+                return chapterSchedule.push(chapterObject);
+            }
+        });
+        chapterSchedule.shift(); // Remove table headers
+        // chapterSchedule.pop(); // Remove table footer
+    })
+        .catch(err => console.log(err));
+    console.log('Schedule Updated');
+});
+// Update memory on server start
+const today = currentUnixDate();
+getAllManga();
+getUpcomingReleases(today);
+// API Routes
+app.get('/', (req, res) => {
+    res.send(welcomeMessage);
+});
+app.get('/all', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    res.send(mangaList);
+}));
+app.get('/schedule', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    res.send(chapterSchedule);
+}));
+app.get('/manga/:mangaID', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { mangaID } = req.params;
+    const url = `https://www.viz.com/shonenjump/chapters/${mangaID}`;
+    (0, axios_1.default)(url)
+        .then(response => {
+        const html = response.data;
+        const $ = cheerio_1.default.load(html);
+        let recommendedManga = [];
+        let title = $('#series-intro').find('h2').text();
+        let headerImageUrl = `${$('.o_hero-media').attr('src')}`;
+        let author = $('.disp-bl--bm').text().replace('Created by ', '');
+        let description = $('h4', '.mar-t-rg').text();
+        let nextReleaseDate = $('.section_future_chapter').text().trim();
+        $('.o_property-link').each((i, e) => {
+            let recommendedTitle = `${$(e).attr('rel')}`;
+            let recommendedLink = `${$(e).attr('href')}`;
+            let recommendedSlug = recommendedLink.replace('/shonenjump/chapters/', '');
+            let recommendation_obj = {
+                title: recommendedTitle,
+                titleSlug: recommendedSlug,
+                link: `https://www.viz.com${recommendedLink}`,
+            };
+            recommendedManga[i] = recommendation_obj;
+        });
+        recommendedManga.join(', ');
+        const mangaObject = {
+            title: `${title}`,
+            headerImageUrl: `${headerImageUrl}`,
+            author: `${author}`,
+            description: `${description}`,
+            nextReleaseCountdown: parseChapterDate(nextReleaseDate),
+            recommendedManga: recommendedManga,
+        };
+        res.send(mangaObject);
+    })
+        .catch(err => console.log(err));
+}));
 app.listen(PORT, () => console.log(`Server running at http://localhost:${PORT}`));
