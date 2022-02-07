@@ -28,8 +28,8 @@ An unofficial REST API showing data about English translations from [Weekly Shon
 - Add individual chapter links
 - Search by title
 - Search by author
-- Fillter upcoming release schedule
 - Add web only tag (due to App store policies)
+- ~~Fillter upcoming release schedule~~
 - ~~Add manga slugs~~
 - ~~Add cover images~~
 - ~~Add description~~
