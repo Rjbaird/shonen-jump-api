@@ -29,6 +29,7 @@ An unofficial REST API showing data about English translations from [Weekly Shon
 - Search by title
 - Search by author
 - Add web only tag (due to App store policies)
+- Add optional sorting paramaters to /schedule & /all (alphabetical, # of chapters, completed)
 - ~~Fillter upcoming release schedule~~
 - ~~Add manga slugs~~
 - ~~Add cover images~~
