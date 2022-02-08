@@ -16,6 +16,8 @@ const express_1 = __importDefault(require("express"));
 const axios_1 = __importDefault(require("axios"));
 const cheerio_1 = __importDefault(require("cheerio"));
 const helmet_1 = __importDefault(require("helmet"));
+const morgan_1 = __importDefault(require("morgan"));
+const cors_1 = __importDefault(require("cors"));
 const express_rate_limit_1 = __importDefault(require("express-rate-limit"));
 const PORT = process.env.PORT || 8000;
 const app = (0, express_1.default)();
@@ -27,6 +29,8 @@ const limiter = (0, express_rate_limit_1.default)({
 // Global Middleware
 app.use(express_1.default.json());
 app.use((0, helmet_1.default)());
+app.use((0, morgan_1.default)('dev'));
+app.use((0, cors_1.default)());
 app.use(limiter);
 // Server Memory
 let mangaList = [];
@@ -135,49 +139,69 @@ getAllManga();
 getUpcomingReleases(today);
 // API Routes
 app.get('/', (req, res) => {
-    res.send(welcomeMessage);
+    try {
+        res.send(welcomeMessage);
+    }
+    catch (error) {
+        return res.status(500).send(error);
+    }
 });
 app.get('/all', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    res.send(mangaList);
+    try {
+        res.send(mangaList);
+    }
+    catch (error) {
+        return res.status(500).send(error);
+    }
 }));
 app.get('/schedule', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    res.send(chapterSchedule);
+    try {
+        res.send(chapterSchedule);
+    }
+    catch (error) {
+        return res.status(500).send(error);
+    }
 }));
 app.get('/manga/:mangaID', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { mangaID } = req.params;
-    const url = `https://www.viz.com/shonenjump/chapters/${mangaID}`;
-    (0, axios_1.default)(url)
-        .then(response => {
-        const html = response.data;
-        const $ = cheerio_1.default.load(html);
-        let recommendedManga = [];
-        let title = $('#series-intro').find('h2').text();
-        let headerImageUrl = `${$('.o_hero-media').attr('src')}`;
-        let author = $('.disp-bl--bm').text().replace('Created by ', '');
-        let description = $('h4', '.mar-t-rg').text();
-        let nextReleaseDate = $('.section_future_chapter').text().trim();
-        $('.o_property-link').each((i, e) => {
-            let recommendedTitle = `${$(e).attr('rel')}`;
-            let recommendedLink = `${$(e).attr('href')}`;
-            let recommendedSlug = recommendedLink.replace('/shonenjump/chapters/', '');
-            let recommendation_obj = {
-                title: recommendedTitle,
-                titleSlug: recommendedSlug,
-                link: `https://www.viz.com${recommendedLink}`,
+    try {
+        const { mangaID } = req.params;
+        const url = `https://www.viz.com/shonenjump/chapters/${mangaID}`;
+        (0, axios_1.default)(url)
+            .then(response => {
+            const html = response.data;
+            const $ = cheerio_1.default.load(html);
+            let recommendedManga = [];
+            let title = $('#series-intro').find('h2').text();
+            let headerImageUrl = `${$('.o_hero-media').attr('src')}`;
+            let author = $('.disp-bl--bm').text().replace('Created by ', '');
+            let description = $('h4', '.mar-t-rg').text();
+            let nextReleaseDate = $('.section_future_chapter').text().trim();
+            $('.o_property-link').each((i, e) => {
+                let recommendedTitle = `${$(e).attr('rel')}`;
+                let recommendedLink = `${$(e).attr('href')}`;
+                let recommendedSlug = recommendedLink.replace('/shonenjump/chapters/', '');
+                let recommendation_obj = {
+                    title: recommendedTitle,
+                    titleSlug: recommendedSlug,
+                    link: `https://www.viz.com${recommendedLink}`,
+                };
+                recommendedManga[i] = recommendation_obj;
+            });
+            recommendedManga.join(', ');
+            const mangaObject = {
+                title: `${title}`,
+                headerImageUrl: `${headerImageUrl}`,
+                author: `${author}`,
+                description: `${description}`,
+                nextReleaseCountdown: parseChapterDate(nextReleaseDate),
+                recommendedManga: recommendedManga,
             };
-            recommendedManga[i] = recommendation_obj;
-        });
-        recommendedManga.join(', ');
-        const mangaObject = {
-            title: `${title}`,
-            headerImageUrl: `${headerImageUrl}`,
-            author: `${author}`,
-            description: `${description}`,
-            nextReleaseCountdown: parseChapterDate(nextReleaseDate),
-            recommendedManga: recommendedManga,
-        };
-        res.send(mangaObject);
-    })
-        .catch(err => console.log(err));
+            res.send(mangaObject);
+        })
+            .catch(err => console.log(err));
+    }
+    catch (error) {
+        return res.status(500).send(error);
+    }
 }));
 app.listen(PORT, () => console.log(`Server running at http://localhost:${PORT}`));

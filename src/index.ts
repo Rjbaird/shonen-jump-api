@@ -18,8 +18,8 @@ const limiter = rateLimit({
 // Global Middleware
 app.use(express.json());
 app.use(helmet());
-app.use(morgan('dev'))
-app.use(cors())
+app.use(morgan('dev'));
+app.use(cors());
 app.use(limiter);
 
 // Server Memory
@@ -137,53 +137,69 @@ getUpcomingReleases(today);
 
 // API Routes
 app.get('/', (req: Request, res: Response) => {
-  res.send(welcomeMessage);
+  try {
+    res.send(welcomeMessage);
+  } catch (error) {
+    return res.status(500).send(error);
+  }
 });
 
 app.get('/all', async (req: Request, res: Response) => {
-  res.send(mangaList);
+  try {
+    res.send(mangaList);
+  } catch (error) {
+    return res.status(500).send(error);
+  }
 });
 
 app.get('/schedule', async (req: Request, res: Response) => {
-  res.send(chapterSchedule);
+  try {
+    res.send(chapterSchedule);
+  } catch (error) {
+    return res.status(500).send(error);
+  }
 });
 
 app.get('/manga/:mangaID', async (req: Request<{ mangaID: 'string' }>, res: Response) => {
-  const { mangaID } = req.params;
-  const url = `https://www.viz.com/shonenjump/chapters/${mangaID}`;
-  axios(url)
-    .then(response => {
-      const html = response.data;
-      const $ = cheerio.load(html);
-      let recommendedManga: object[] = [];
-      let title = $('#series-intro').find('h2').text();
-      let headerImageUrl = `${$('.o_hero-media').attr('src')}`;
-      let author = $('.disp-bl--bm').text().replace('Created by ', '');
-      let description = $('h4', '.mar-t-rg').text();
-      let nextReleaseDate = $('.section_future_chapter').text().trim();
-      $('.o_property-link').each((i, e) => {
-        let recommendedTitle = `${$(e).attr('rel')}`;
-        let recommendedLink = `${$(e).attr('href')}`;
-        let recommendedSlug = recommendedLink.replace('/shonenjump/chapters/', '');
-        let recommendation_obj = {
-          title: recommendedTitle,
-          titleSlug: recommendedSlug,
-          link: `https://www.viz.com${recommendedLink}`,
+  try {
+    const { mangaID } = req.params;
+    const url = `https://www.viz.com/shonenjump/chapters/${mangaID}`;
+    axios(url)
+      .then(response => {
+        const html = response.data;
+        const $ = cheerio.load(html);
+        let recommendedManga: object[] = [];
+        let title = $('#series-intro').find('h2').text();
+        let headerImageUrl = `${$('.o_hero-media').attr('src')}`;
+        let author = $('.disp-bl--bm').text().replace('Created by ', '');
+        let description = $('h4', '.mar-t-rg').text();
+        let nextReleaseDate = $('.section_future_chapter').text().trim();
+        $('.o_property-link').each((i, e) => {
+          let recommendedTitle = `${$(e).attr('rel')}`;
+          let recommendedLink = `${$(e).attr('href')}`;
+          let recommendedSlug = recommendedLink.replace('/shonenjump/chapters/', '');
+          let recommendation_obj = {
+            title: recommendedTitle,
+            titleSlug: recommendedSlug,
+            link: `https://www.viz.com${recommendedLink}`,
+          };
+          recommendedManga[i] = recommendation_obj;
+        });
+        recommendedManga.join(', ');
+        const mangaObject = {
+          title: `${title}`,
+          headerImageUrl: `${headerImageUrl}`,
+          author: `${author}`,
+          description: `${description}`,
+          nextReleaseCountdown: parseChapterDate(nextReleaseDate),
+          recommendedManga: recommendedManga,
         };
-        recommendedManga[i] = recommendation_obj;
-      });
-      recommendedManga.join(', ');
-      const mangaObject = {
-        title: `${title}`,
-        headerImageUrl: `${headerImageUrl}`,
-        author: `${author}`,
-        description: `${description}`,
-        nextReleaseCountdown: parseChapterDate(nextReleaseDate),
-        recommendedManga: recommendedManga,
-      };
-      res.send(mangaObject);
-    })
-    .catch(err => console.log(err));
+        res.send(mangaObject);
+      })
+      .catch(err => console.log(err));
+  } catch (error) {
+    return res.status(500).send(error);
+  }
 });
 
 app.listen(PORT, (): void => console.log(`Server running at http://localhost:${PORT}`));
