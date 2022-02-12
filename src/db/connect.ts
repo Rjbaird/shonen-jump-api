@@ -1,22 +1,9 @@
 import logger from '../logger';
-import mongoose, { Schema, model } from 'mongoose';
 import { mangaList, chapterSchedule } from '../db/memory';
 import { parseChapterNumber, parseChapterDate } from '../utils';
 
 import axios from 'axios';
 import cheerio from 'cheerio';
-
-// TODO: Debug MongoDB connection issues
-const connect = async () => {
-  const dbUri = process.env.DB_URI as string;
-  try {
-    mongoose.connect(dbUri).then(() => {
-      logger.info('Database Connected!');
-    });
-  } catch (error) {}
-  logger.error('Database error');
-  process.exit(1);
-};
 
 // Data Collection Functions
 const getAllManga = async () => {
@@ -127,4 +114,4 @@ const getUpcomingReleases = async (date: number) => {
   logger.info('Schedule Updated');
 };
 
-export { connect, getUpcomingReleases, getAllManga, getOneManga };
+export { getUpcomingReleases, getAllManga, getOneManga };

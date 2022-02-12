@@ -63,7 +63,5 @@ app.use('/api-docs', swagger_ui_express_1.default.serve, swagger_ui_express_1.de
 (0, connect_1.getUpcomingReleases)((0, utils_1.currentUnixDate)());
 app.listen(PORT, () => __awaiter(void 0, void 0, void 0, function* () {
     logger_1.default.info(`Server running at http://localhost:${PORT}`);
-    // TODO: Figure out why MongoDB won't connect
-    // await connect();
     (0, routes_1.default)(app);
 }));

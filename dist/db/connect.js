@@ -12,26 +12,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getOneManga = exports.getAllManga = exports.getUpcomingReleases = exports.connect = void 0;
+exports.getOneManga = exports.getAllManga = exports.getUpcomingReleases = void 0;
 const logger_1 = __importDefault(require("../logger"));
-const mongoose_1 = __importDefault(require("mongoose"));
 const memory_1 = require("../db/memory");
 const utils_1 = require("../utils");
 const axios_1 = __importDefault(require("axios"));
 const cheerio_1 = __importDefault(require("cheerio"));
-// TODO: Debug MongoDB connection issues
-const connect = () => __awaiter(void 0, void 0, void 0, function* () {
-    const dbUri = process.env.DB_URI;
-    try {
-        mongoose_1.default.connect(dbUri).then(() => {
-            logger_1.default.info('Database Connected!');
-        });
-    }
-    catch (error) { }
-    logger_1.default.error('Database error');
-    process.exit(1);
-});
-exports.connect = connect;
 // Data Collection Functions
 const getAllManga = () => __awaiter(void 0, void 0, void 0, function* () {
     const url = 'https://www.viz.com/shonenjump';

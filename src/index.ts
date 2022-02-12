@@ -56,7 +56,5 @@ getUpcomingReleases(currentUnixDate());
 
 app.listen(PORT, async () => {
   logger.info(`Server running at http://localhost:${PORT}`);
-  // TODO: Figure out why MongoDB won't connect
-  // await connect();
   routes(app);
 });
