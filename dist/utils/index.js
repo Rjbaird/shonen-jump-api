@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.parseChapterDate = exports.parseChapterNumber = exports.currentUnixDate = void 0;
+exports.getCompletionStatus = exports.parseChapterDate = exports.parseChapterNumber = exports.currentUnixDate = void 0;
 const currentUnixDate = () => {
     const date = new Date();
     const options = { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'UTC' };
@@ -23,3 +23,10 @@ const parseChapterDate = (date_string) => {
     return date_string;
 };
 exports.parseChapterDate = parseChapterDate;
+const getCompletionStatus = (chapterStatus) => {
+    if (chapterStatus === 'NA') {
+        return true;
+    }
+    return false;
+};
+exports.getCompletionStatus = getCompletionStatus;

@@ -15,10 +15,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const logger_1 = __importDefault(require("./logger"));
 const routes_1 = __importDefault(require("./routes"));
+require("dotenv/config");
 // Basic Server Setup
 const PORT = process.env.PORT || 8000;
 const app = (0, express_1.default)();
 const connect_1 = require("./db/connect");
+const scraper_1 = require("./scripts/scraper");
 const utils_1 = require("./utils");
 const middleware_1 = require("./middleware");
 // Documentation Tools
@@ -26,8 +28,8 @@ const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
 const swagger_jsdoc_1 = __importDefault(require("swagger-jsdoc"));
 // Install Global Middleware
 app.use([
-    express_1.default.urlencoded({ extended: false }),
-    express_1.default.json(),
+    express_1.default.urlencoded({ extended: true }),
+    express_1.default.json({ limit: '10kb' }),
     (0, middleware_1.helmet)(),
     (0, middleware_1.morgan)('dev'),
     (0, middleware_1.cors)(),
@@ -59,9 +61,10 @@ const swagOptions = {
 const docSpecs = (0, swagger_jsdoc_1.default)(swagOptions);
 app.use('/api-docs', swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(docSpecs));
 // Update memory on server start
-(0, connect_1.getAllManga)();
-(0, connect_1.getUpcomingReleases)((0, utils_1.currentUnixDate)());
+(0, scraper_1.getAllManga)();
+(0, scraper_1.getUpcomingReleases)((0, utils_1.currentUnixDate)());
 app.listen(PORT, () => __awaiter(void 0, void 0, void 0, function* () {
     logger_1.default.info(`Server running at http://localhost:${PORT}`);
+    (0, connect_1.connect)();
     (0, routes_1.default)(app);
 }));
