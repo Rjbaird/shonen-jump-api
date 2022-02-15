@@ -20,4 +20,11 @@ const parseChapterDate = (date_string: string) => {
   return date_string;
 };
 
-export { currentUnixDate, parseChapterNumber, parseChapterDate };
+const getCompletionStatus = (chapterStatus: string) => {
+  if (chapterStatus === 'NA') {
+    return true;
+  }
+  return false;
+};
+
+export { currentUnixDate, parseChapterNumber, parseChapterDate, getCompletionStatus };

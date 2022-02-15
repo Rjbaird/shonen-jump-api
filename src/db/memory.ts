@@ -9,4 +9,5 @@ const welcomeMessage = {
   rapidAPI: 'https://rapidapi.com/Rjbaird/api/unofficial-shonen-jump',
   endpoints: ['/manga', '/manga/:mangaID', '/schedule']
 };
+
 export { mangaList, chapterSchedule, welcomeMessage };

@@ -1,7 +1,7 @@
 {
   "name": "shonen-jump-api",
-  "version": "1.1.0",
-  "description": "An API showing data about English releases from Weekly Shonen Jump",
+  "version": "0.5.0",
+  "description": "A REST API showing data about English releases from Weekly Shonen Jump",
   "main": "./build/index.js",
   "scripts": {
     "start": "node dist/index.js",
@@ -19,6 +19,7 @@
     "cheerio": "^1.0.0-rc.10",
     "compression": "^1.7.4",
     "cors": "^2.8.5",
+    "dotenv": "^16.0.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
     "express": "^4.17.1",

@@ -1,12 +1,14 @@
 import express, { Express } from 'express';
 import logger from './logger';
 import routes from './routes';
+import 'dotenv/config';
 
 // Basic Server Setup
 const PORT = process.env.PORT || 8000;
 const app: Express = express();
 
-import { getUpcomingReleases, getAllManga } from './db/connect';
+import { connect } from './db/connect';
+import { getAllManga, getUpcomingReleases, getOneManga } from './scripts/scraper';
 import { currentUnixDate } from './utils';
 import { helmet, morgan, cors, compression, limiter } from './middleware';
 
@@ -16,8 +18,8 @@ import swaggerJsDoc from 'swagger-jsdoc';
 
 // Install Global Middleware
 app.use([
-  express.urlencoded({ extended: false }),
-  express.json(),
+  express.urlencoded({ extended: true }),
+  express.json({ limit: '10kb' }),
   helmet(),
   morgan('dev'),
   cors(),
@@ -56,5 +58,6 @@ getUpcomingReleases(currentUnixDate());
 
 app.listen(PORT, async () => {
   logger.info(`Server running at http://localhost:${PORT}`);
+  connect();
   routes(app);
 });
