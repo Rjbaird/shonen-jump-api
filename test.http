@@ -1,0 +1,14 @@
+@TEST_URL = http://localhost:8000
+@LIVE_URL = https://shonen-jump-api.herokuapp.com
+
+### Health Check w/ welcome message
+GET {{TEST_URL}}/
+
+### Get all available manga
+GET {{TEST_URL}}/manga
+
+### Get one manga
+GET {{TEST_URL}}/manga/naruto
+
+### Get all upcoming releases
+GET {{TEST_URL}}/schedule
