@@ -1,6 +1,6 @@
 {
   "name": "shonen-jump-api",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "A REST API showing data about English releases from Weekly Shonen Jump",
   "main": "./build/index.js",
   "scripts": {
