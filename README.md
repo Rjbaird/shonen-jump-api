@@ -1,4 +1,3 @@
-
 # Shonen Jump API
 ![Version](https://img.shields.io/github/package-json/v/Rjbaird/shonen-jump-api?style=for-the-badge)
 ![Node.js](https://img.shields.io/npm/v/node?color=%23339933&label=Node.js&logo=Node.js&style=for-the-badge)
