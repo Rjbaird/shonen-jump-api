@@ -5,10 +5,10 @@
 GET {{TEST_URL}}/
 
 ### Get all available manga
-GET {{TEST_URL}}/manga
+GET {{TEST_URL}}/v1/manga
 
 ### Get one manga
-GET {{TEST_URL}}/manga/naruto
+GET {{TEST_URL}}/v1/manga/bleach
 
 ### Get all upcoming releases
-GET {{TEST_URL}}/schedule
+GET {{TEST_URL}}/v1/schedule

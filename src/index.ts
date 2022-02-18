@@ -61,7 +61,7 @@ const docSpecs = swaggerJsDoc(swagOptions);
 app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(docSpecs));
 
 // Set up cron with Bree
-const bree = new Bree({ jobs });
+// const bree = new Bree({ jobs });
 
 // Update memory on server start
 getAllManga();
@@ -71,5 +71,5 @@ app.listen(PORT, async () => {
   logger.info(`Server running at http://localhost:${PORT}`);
   // connect();
   routes(app);
-  bree.start();
+  // bree.start();
 });
