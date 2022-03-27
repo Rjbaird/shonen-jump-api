@@ -16,7 +16,8 @@ const logger_1 = __importDefault(require("./logger"));
 const scraper_1 = require("./scripts/scraper");
 const memory_1 = require("./db/memory");
 function default_1(app) {
-    app.get('/', (req, res) => {
+    // Health Check & Welcome Message
+    app.get("/", (req, res) => {
         try {
             res.send(memory_1.welcomeMessage);
         }
@@ -24,7 +25,8 @@ function default_1(app) {
             return res.status(500).send(error);
         }
     });
-    app.get('/v1/manga', (req, res) => __awaiter(this, void 0, void 0, function* () {
+    // GET - Returns a list of all manga. Default sort is by most recent chapter release
+    app.get("/v1/manga", (req, res) => __awaiter(this, void 0, void 0, function* () {
         try {
             res.send(memory_1.mangaList);
         }
@@ -32,7 +34,8 @@ function default_1(app) {
             return res.status(500).send(error);
         }
     }));
-    app.get('/v1/schedule', (req, res) => __awaiter(this, void 0, void 0, function* () {
+    // GET - Returns a list of all upcoming manga. Default sort starts at today's release
+    app.get("/v1/schedule", (req, res) => __awaiter(this, void 0, void 0, function* () {
         try {
             res.send(memory_1.chapterSchedule);
         }
@@ -40,28 +43,31 @@ function default_1(app) {
             return res.status(500).send(error);
         }
     }));
-    app.get('/v1/manga/:mangaID', (req, res) => __awaiter(this, void 0, void 0, function* () {
+    // GET - Returns data on a single manga
+    app.get("/v1/manga/:mangaID", (req, res) => __awaiter(this, void 0, void 0, function* () {
+        const { mangaID } = req.params;
+        if (!mangaID)
+            res.status(400).send({ msg: "Manga ID required" });
         try {
-            const { mangaID } = req.params;
             (0, scraper_1.getOneManga)(mangaID)
-                .then(response => {
+                .then((response) => {
                 return res.send(response);
             })
-                .catch(error => logger_1.default.info(error));
+                .catch((error) => logger_1.default.info(error));
         }
         catch (error) {
             return res.status(500).send(error);
         }
     }));
-    app.post('/v1/manga', (req, res) => __awaiter(this, void 0, void 0, function* () {
+    app.post("/v1/manga", (req, res) => __awaiter(this, void 0, void 0, function* () {
         const { mangaData } = req.body;
         const apiKey = req.headers.authorization;
         if (apiKey !== process.env.API_KEY) {
             (0, scraper_1.getOneManga)(mangaData)
-                .then(response => {
+                .then((response) => {
                 return res.send(response);
             })
-                .catch(error => {
+                .catch((error) => {
                 logger_1.default.info(error);
                 return res.status(500).send(error);
             });

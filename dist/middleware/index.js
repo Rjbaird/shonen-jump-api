@@ -18,6 +18,6 @@ exports.compression = compression_1.default;
 const limiter = (0, express_rate_limit_1.default)({
     windowMs: 15 * 60 * 1000,
     max: 100,
-    message: 'Too many accounts created from this IP, please try again after 15 minutes',
+    message: 'Too many requests from this IP, please try again after 15 minutes',
 });
 exports.limiter = limiter;

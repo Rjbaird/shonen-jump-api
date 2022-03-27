@@ -1,17 +1,17 @@
-import logger from '../logger';
-import mongoose from 'mongoose';
+import logger from "../logger";
+import mongoose from "mongoose";
 
-
-// Connect to MongoDB
-const connect = () => {
+const connect = async () => {
   const url: string = process.env.DB_URI as string;
   mongoose.connect(url);
-  mongoose.connection.once('open', async () => {
-    logger.info('Connected to database');
+  mongoose.pluralize(null);
+  mongoose.connection.once("open", () => {
+    logger.info("Connected to database");
   });
 
-  mongoose.connection.on('error', err => {
-    logger.error('Error connecting to database  ', err);
+  mongoose.connection.on("error", (err) => {
+    logger.error("Error connecting to database...", err);
+    process.exit();
   });
 };
 
@@ -19,14 +19,10 @@ const disconnect = () => {
   if (!mongoose.connection) {
     return;
   }
-
   mongoose.disconnect();
-
-  mongoose.connection.once('close', async () => {
-    console.log('Diconnected  to database');
+  mongoose.connection.once("close", async () => {
+    console.log("Diconnected  to database");
   });
 };
-
-
 
 export { connect, disconnect };

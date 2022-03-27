@@ -15,25 +15,26 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.disconnect = exports.connect = void 0;
 const logger_1 = __importDefault(require("../logger"));
 const mongoose_1 = __importDefault(require("mongoose"));
-// Connect to MongoDB
-const connect = () => {
+const connect = () => __awaiter(void 0, void 0, void 0, function* () {
     const url = process.env.DB_URI;
     mongoose_1.default.connect(url);
-    mongoose_1.default.connection.once('open', () => __awaiter(void 0, void 0, void 0, function* () {
-        logger_1.default.info('Connected to database');
-    }));
-    mongoose_1.default.connection.on('error', err => {
-        logger_1.default.error('Error connecting to database  ', err);
+    mongoose_1.default.pluralize(null);
+    mongoose_1.default.connection.once("open", () => {
+        logger_1.default.info("Connected to database");
     });
-};
+    mongoose_1.default.connection.on("error", (err) => {
+        logger_1.default.error("Error connecting to database...", err);
+        process.exit();
+    });
+});
 exports.connect = connect;
 const disconnect = () => {
     if (!mongoose_1.default.connection) {
         return;
     }
     mongoose_1.default.disconnect();
-    mongoose_1.default.connection.once('close', () => __awaiter(void 0, void 0, void 0, function* () {
-        console.log('Diconnected  to database');
+    mongoose_1.default.connection.once("close", () => __awaiter(void 0, void 0, void 0, function* () {
+        console.log("Diconnected  to database");
     }));
 };
 exports.disconnect = disconnect;

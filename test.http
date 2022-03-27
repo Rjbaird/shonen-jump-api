@@ -2,13 +2,37 @@
 @LIVE_URL = https://shonen-jump-api.herokuapp.com
 
 ### Health Check w/ welcome message
+### DONE
 GET {{TEST_URL}}/
 
 ### Get all available manga
 GET {{TEST_URL}}/v1/manga
 
 ### Get one manga
-GET {{TEST_URL}}/v1/manga/bleach
+GET {{TEST_URL}}/v1/manga/chainsaw-man
 
 ### Get all upcoming releases
+### DONE
 GET {{TEST_URL}}/v1/schedule
+
+### Update upcoming releases
+### DONE
+PUT {{TEST_URL}}/v1/schedule
+Content-Type: application/json
+Authorization: {{$dotenv ADMIN_KEY}}
+
+### Update one manga
+### DONE
+PUT {{TEST_URL}}/v1/manga/boruto
+Content-Type: application/json
+Authorization: {{$dotenv ADMIN_KEY}}
+
+### Create manga
+POST {{TEST_URL}}/v1/manga/chainsaw-man
+Content-Type: application/json
+Authorization: {{$dotenv ADMIN_KEY}}
+
+### Update All Manga
+POST {{TEST_URL}}/v1/allmanga
+Content-Type: application/json
+Authorization: {{$dotenv ADMIN_KEY}}

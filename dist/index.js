@@ -14,14 +14,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const logger_1 = __importDefault(require("./logger"));
-const routes_1 = __importDefault(require("./routes"));
+const routes_1 = __importDefault(require("./routes/routes"));
 require("dotenv/config");
 // Basic Server Setup
 const PORT = process.env.PORT || 8000;
 const app = (0, express_1.default)();
+// Import Bree for database update cron jobs
+// import Bree from "bree";
 const connect_1 = require("./db/connect");
 const scraper_1 = require("./scripts/scraper");
-const utils_1 = require("./utils");
+const schedule_controller_1 = require("./controllers/schedule.controller");
 const middleware_1 = require("./middleware");
 // Documentation Tools
 const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
@@ -29,9 +31,9 @@ const swagger_jsdoc_1 = __importDefault(require("swagger-jsdoc"));
 // Install Global Middleware
 app.use([
     express_1.default.urlencoded({ extended: true }),
-    express_1.default.json({ limit: '10kb' }),
+    express_1.default.json({ limit: "10kb" }),
     (0, middleware_1.helmet)(),
-    (0, middleware_1.morgan)('dev'),
+    (0, middleware_1.morgan)("dev"),
     (0, middleware_1.cors)(),
     middleware_1.limiter,
     (0, middleware_1.compression)(),
@@ -39,16 +41,16 @@ app.use([
 // Swagger Docs Automation
 const swagOptions = {
     definition: {
-        openapi: '3.0.0',
+        openapi: "3.0.0",
         info: {
-            title: 'Shonen Jump API',
-            version: '1.1.0',
-            description: 'An API showing data about English releases from Weekly Shonen Jump',
+            title: "Shonen Jump API",
+            version: "1.1.0",
+            description: "An API showing data about English releases from Weekly Shonen Jump",
         },
         contact: {
-            name: 'Ryan Baird',
-            url: 'https://ryanbaird.com/',
-            email: 'rjbaird09@gmail.com',
+            name: "Ryan Baird",
+            url: "https://ryanbaird.com/",
+            email: "rjbaird09@gmail.com",
         },
         servers: [
             {
@@ -56,15 +58,20 @@ const swagOptions = {
             },
         ],
     },
-    apis: ['./src/*.ts'],
+    apis: ["./src/*.ts"],
 };
 const docSpecs = (0, swagger_jsdoc_1.default)(swagOptions);
-app.use('/api-docs', swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(docSpecs));
-// Update memory on server start
-(0, scraper_1.getAllManga)();
-(0, scraper_1.getUpcomingReleases)((0, utils_1.currentUnixDate)());
+app.use("/api-docs", swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(docSpecs));
+// Set up cron with Bree
+// const bree = new Bree({ jobs });
+// Start server
 app.listen(PORT, () => __awaiter(void 0, void 0, void 0, function* () {
     logger_1.default.info(`Server running at http://localhost:${PORT}`);
-    (0, connect_1.connect)();
+    yield (0, connect_1.connect)();
+    // Update database on server start
+    yield (0, schedule_controller_1.updateScheduleDB)();
+    yield (0, scraper_1.getBasicMangaData)();
+    // Connect to routes
     (0, routes_1.default)(app);
+    // Start cron jobs
 }));

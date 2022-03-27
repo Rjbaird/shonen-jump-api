@@ -9,7 +9,7 @@ import compression from 'compression';
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // limit each IP to 100 requests per windowMs
-  message: 'Too many accounts created from this IP, please try again after 15 minutes',
+  message: 'Too many requests from this IP, please try again after 15 minutes',
 });
 
 export { helmet, morgan, cors, compression, limiter };
