@@ -23,12 +23,12 @@ Authorization: {{$dotenv ADMIN_KEY}}
 
 ### Update one manga
 ### DONE
-PUT {{TEST_URL}}/v1/manga/boruto
+PUT {{TEST_URL}}/v1/manga/chainsaw-man
 Content-Type: application/json
 Authorization: {{$dotenv ADMIN_KEY}}
 
 ### Create manga
-POST {{TEST_URL}}/v1/manga/dragon-ball-z
+POST {{TEST_URL}}/v1/manga/chainsaw-man
 Content-Type: application/json
 Authorization: {{$dotenv ADMIN_KEY}}
 

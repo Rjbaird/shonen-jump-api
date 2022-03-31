@@ -51,7 +51,7 @@ export default function (app: Express) {
   app.put('/v1/schedule', updateReleaseSchedule);
 
   // COMPLETE
-  // NOTE: POST - Creates data on a single manga
+  // NOTE: POST - Updates data on a single manga
   app.put('/v1/manga/:mangaID', updateOneManga);
 
   logger.info('Route set up complete');
