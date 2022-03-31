@@ -14,6 +14,7 @@ export interface jumpMangaObj {
   thumbnailImg: string;
   description: string;
   authorInfo: string;
+  ratedMature: boolean;
   recommendedManga: recommendedMangaObj[];
 }
 
@@ -42,6 +43,7 @@ export interface completeMangaObj {
   jumpImages: string[];
   vizImages: string[];
   authorInfo: string;
+  ratedMature: boolean;
   descriptionJump: string;
   descriptionViz: string;
   // recommendedManga: {

@@ -6,11 +6,6 @@
     "rootDir": "./src",
     "moduleResolution": "node",
     "baseUrl": "./src",
-    "paths": {
-      "@/resources/*": ["resources/*"],
-      "@/utils/*": ["utils/*"],
-      "@/middleware/*": ["middleware/*"]
-    },
     "outDir": "dist",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,

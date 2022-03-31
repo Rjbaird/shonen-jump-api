@@ -33,13 +33,17 @@ export const updateAllManga = async (req: Request, res: Response) => {
     // TODO: Pull data from Redis not scrape
     const allManga = await scrapeMangaList();
     for (const manga of allManga) {
-      logger.info(`Checking database for ${manga.mangaID}`)
+      logger.info(`Checking database for ${manga.mangaID}`);
       const completeManga = await createCompleteManga(manga.mangaID);
       if (completeManga) {
-        createManga(completeManga);
+        updateManga(manga.mangaID, completeManga);
+        // return res.status(201).json({
+        //   msg: `${manga.mangaID} document updated in MongoDB`,
+        //   data: completeManga,
+        // });
       }
       const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-      await delay(7500);
+      await delay(4500);
     }
     return res.status(201).json({
       data: 'All manga updated!!',

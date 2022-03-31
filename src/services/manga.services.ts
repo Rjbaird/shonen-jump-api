@@ -57,6 +57,10 @@ export const scrapeJumpMangaData = async (mangaID: string) => {
     let title = $('h2', '.mar-t-rg').text();
     let description = $('h4', '.mar-t-rg').text();
     let authorInfo = $('.disp-bl--bm').text();
+    let ratedMature = false;
+    if ($('.o_m-rated ').text()) {
+      ratedMature = true;
+    }
     $('.o_property-link').each((i, e) => {
       let recommendedTitle = `${$(e).attr('rel')}`;
       let recommendedLink = `${$(e).attr('href')}`;
@@ -76,6 +80,7 @@ export const scrapeJumpMangaData = async (mangaID: string) => {
       thumbnailImg: thumbnailImg,
       description: description,
       authorInfo: authorInfo,
+      ratedMature: ratedMature,
       recommendedManga: recommendedManga,
     };
     return mangaObject;
@@ -150,7 +155,6 @@ export const scrapeVizMangaData = async (mangaID: string) => {
         authorInfo: 'NA',
         recommendedManga: [],
       };
-      logger.info(mangaObject);
       return mangaObject;
     }
     logger.info(error);
@@ -172,10 +176,11 @@ export const combineMangaData = (jumpData: jumpMangaObj, vizData: vizMangaObj) =
     title: jumpData.title,
     mangaID: jumpData.mangaID,
     jumpLink: jumpData.jumpLink,
-    vizLink: vizData.vizLink,
+    vizLink: vizData.vizLink || 'NA',
     jumpImages: [jumpData.headerImg, jumpData.thumbnailImg],
     vizImages: [vizData.headerImg, vizData.thumbnailImg],
     authorInfo: jumpData.authorInfo || vizData.authorInfo,
+    ratedMature: jumpData.ratedMature,
     descriptionJump: jumpData.description,
     descriptionViz: vizData.description,
   };

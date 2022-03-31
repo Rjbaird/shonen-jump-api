@@ -9,6 +9,7 @@ const mangaSchema: Schema = new Schema({
   jumpImages: [{ type: String, required: false }],
   vizImages: [{ type: String, required: false }],
   authorInfo: { type: String, required: true },
+  ratedMature: { type: Boolean, required: true },
   descriptionJump: { type: String, required: true },
   descriptionViz: { type: String, required: true },
   // recommendedManga: [{ type: String, required: false }],
