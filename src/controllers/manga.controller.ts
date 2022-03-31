@@ -22,23 +22,25 @@ export const getManga = async (req: Request, res: Response) => {
 };
 
 export const updateAllManga = async (req: Request, res: Response) => {
-    const secretKey = req.headers.authorization;
-    const adminKey = process.env.ADMIN_KEY as string;
-    if (secretKey !== adminKey) {
-      return res.status(401).json({
-        data: `You are not authorized to updateAllManga in database...`,
-      });
-    }
+  const secretKey = req.headers.authorization;
+  const adminKey = process.env.ADMIN_KEY as string;
+  if (secretKey !== adminKey) {
+    return res.status(401).json({
+      data: `You are not authorized to updateAllManga in database...`,
+    });
+  }
   try {
-    // TODO: Add space between request to prevent 429 server error (too many requests)
     // TODO: Pull data from Redis not scrape
     const allManga = await scrapeMangaList();
-    allManga.forEach(async manga => {
+    for (const manga of allManga) {
+      logger.info(`Checking database for ${manga.mangaID}`)
       const completeManga = await createCompleteManga(manga.mangaID);
       if (completeManga) {
         createManga(completeManga);
       }
-    });
+      const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+      await delay(7500);
+    }
     return res.status(201).json({
       data: 'All manga updated!!',
     });

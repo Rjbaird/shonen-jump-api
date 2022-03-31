@@ -28,7 +28,7 @@ Content-Type: application/json
 Authorization: {{$dotenv ADMIN_KEY}}
 
 ### Create manga
-POST {{TEST_URL}}/v1/manga/chainsaw-man
+POST {{TEST_URL}}/v1/manga/dragon-ball-z
 Content-Type: application/json
 Authorization: {{$dotenv ADMIN_KEY}}
 

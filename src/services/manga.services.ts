@@ -1,63 +1,15 @@
 import logger from '../logger';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import cheerio from 'cheerio';
 import { Manga } from '../models/manga.model';
-
-// ========== SECTION Interface ========== //
-// TODO: Move to individual Interface files
-interface recommendedMangaObj {
-  title: string;
-  titleSlug: string;
-  link: string;
-}
-
-interface jumpMangaObj {
-  title: string;
-  mangaID: string;
-  jumpLink: string;
-  headerImg: string;
-  thumbnailImg: string;
-  description: string;
-  authorInfo: string;
-  recommendedManga: recommendedMangaObj[];
-}
-
-interface recommendedVizObj {
-  title: string;
-  titleSlug: string;
-  link: string;
-}
-
-interface vizMangaObj {
-  title: string;
-  mangaID: string;
-  vizLink: string;
-  headerImg: string;
-  thumbnailImg: string;
-  description: string;
-  recommendedManga: recommendedVizObj[];
-}
-
-interface completeMangaObj {
-  title: string;
-  mangaID: string;
-  jumpLink: string;
-  vizLink: string;
-  jumpImages: string[];
-  vizImages: string[];
-  authorInfo: string;
-  descriptionJump: string;
-  descriptionViz: string;
-  // recommendedManga: {
-  //   jump: object[];
-  //   viz: object[];
-  // };
-}
-
-interface mangaListObj {
-  title: string;
-  mangaID: string;
-}
+import {
+  recommendedMangaObj,
+  jumpMangaObj,
+  recommendedVizObj,
+  vizMangaObj,
+  completeMangaObj,
+  mangaListObj,
+} from '../interfaces';
 
 // ========== SECTION: Manga Scraping Services ========== //
 
@@ -142,6 +94,19 @@ export const scrapeVizMangaData = async (mangaID: string) => {
   const url = `https://www.viz.com/${mangaID}`;
   try {
     const response = await axios(url);
+    if (response.status == 404) {
+      const mangaObject: vizMangaObj = {
+        title: '',
+        mangaID: mangaID,
+        vizLink: 'NA',
+        headerImg: 'NA',
+        thumbnailImg: 'NA',
+        description: 'NA',
+        authorInfo: 'NA',
+        recommendedManga: [],
+      };
+      return mangaObject;
+    }
     const html = response.data;
     const $ = cheerio.load(html);
     let recommendedManga: recommendedVizObj[] = [];
@@ -149,6 +114,8 @@ export const scrapeVizMangaData = async (mangaID: string) => {
     let thumbnailImg = `${$('img', '.shift').attr('src')}`;
     let title = $('#page_title').text();
     let description = $('p', '#series-intro-jump').text();
+    let authorText = $('.disp-bl--bm').text();
+    let authorInfo = authorText.split('MoreLess')[0].trim();
     $('.o_property-link').each((i, e) => {
       let recommendedTitle = `${$(e).attr('rel')}`;
       let recommendedLink = `${$(e).attr('href')}`;
@@ -167,11 +134,25 @@ export const scrapeVizMangaData = async (mangaID: string) => {
       headerImg: headerImg,
       thumbnailImg: thumbnailImg,
       description: description,
+      authorInfo: authorInfo,
       recommendedManga: recommendedManga,
     };
-    logger.info(`Data scraped for ${mangaObject.title}`);
     return mangaObject;
   } catch (error) {
+    if (error.message === 'Request failed with status code 404') {
+      const mangaObject: vizMangaObj = {
+        title: '',
+        mangaID: mangaID,
+        vizLink: 'NA',
+        headerImg: 'NA',
+        thumbnailImg: 'NA',
+        description: 'NA',
+        authorInfo: 'NA',
+        recommendedManga: [],
+      };
+      logger.info(mangaObject);
+      return mangaObject;
+    }
     logger.info(error);
   }
 };
@@ -194,13 +175,9 @@ export const combineMangaData = (jumpData: jumpMangaObj, vizData: vizMangaObj) =
     vizLink: vizData.vizLink,
     jumpImages: [jumpData.headerImg, jumpData.thumbnailImg],
     vizImages: [vizData.headerImg, vizData.thumbnailImg],
-    authorInfo: jumpData.authorInfo,
+    authorInfo: jumpData.authorInfo || vizData.authorInfo,
     descriptionJump: jumpData.description,
     descriptionViz: vizData.description,
-    // recommendedManga: {
-    //   jump: jumpData.recommendedManga,
-    //   viz: vizData.recommendedManga,
-    // },
   };
   return completeManga;
 };
@@ -282,4 +259,3 @@ export const updateManga = async (mangaID: string, completeMangaObj: completeMan
     return false;
   }
 };
-
