@@ -73,15 +73,15 @@ export const scrapeJumpMangaData = async (mangaID: string) => {
       recommendedManga[i] = recommendedMangaObj;
     });
     const mangaObject: jumpMangaObj = {
-      title: title,
-      mangaID: mangaID,
+      title,
+      mangaID,
       jumpLink: url,
-      headerImg: headerImg,
-      thumbnailImg: thumbnailImg,
-      description: description,
-      authorInfo: authorInfo,
-      ratedMature: ratedMature,
-      recommendedManga: recommendedManga,
+      headerImg,
+      thumbnailImg,
+      description,
+      authorInfo,
+      ratedMature,
+      recommendedManga,
     };
     return mangaObject;
   } catch (error) {
@@ -102,7 +102,7 @@ export const scrapeVizMangaData = async (mangaID: string) => {
     if (response.status == 404) {
       const mangaObject: vizMangaObj = {
         title: '',
-        mangaID: mangaID,
+        mangaID,
         vizLink: 'NA',
         headerImg: 'NA',
         thumbnailImg: 'NA',
@@ -133,21 +133,21 @@ export const scrapeVizMangaData = async (mangaID: string) => {
       recommendedManga[i] = recommendedVizObj;
     });
     const mangaObject: vizMangaObj = {
-      title: title,
-      mangaID: mangaID,
+      title,
+      mangaID,
       vizLink: url,
-      headerImg: headerImg,
-      thumbnailImg: thumbnailImg,
-      description: description,
-      authorInfo: authorInfo,
-      recommendedManga: recommendedManga,
+      headerImg,
+      thumbnailImg,
+      description,
+      authorInfo,
+      recommendedManga,
     };
     return mangaObject;
   } catch (error) {
     if (error.message === 'Request failed with status code 404') {
       const mangaObject: vizMangaObj = {
         title: '',
-        mangaID: mangaID,
+        mangaID,
         vizLink: 'NA',
         headerImg: 'NA',
         thumbnailImg: 'NA',

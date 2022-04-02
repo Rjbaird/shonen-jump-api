@@ -9,7 +9,7 @@ GET {{TEST_URL}}/
 GET {{TEST_URL}}/v1/manga
 
 ### Get one manga
-GET {{TEST_URL}}/v1/manga/chainsaw-man
+GET {{TEST_URL}}/v1/manga/bleach
 
 ### Get all upcoming releases
 ### DONE
