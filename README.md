@@ -28,7 +28,6 @@ An unofficial REST API showing data about English translations from [Weekly Shon
 - Add individual chapter links
 - Search by title
 - Search by author
-- Add web only tag (due to App store policies)
 - Add optional sorting paramaters
 
 ## Feedback & Support
