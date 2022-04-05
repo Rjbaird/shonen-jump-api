@@ -8,7 +8,6 @@ const PORT = process.env.PORT || 8000;
 const app: Express = express();
 
 // Import Bree for database update cron jobs
-// import Bree from "bree";
 
 import { connect } from './db/connect';
 import { connectToRedis } from './db/redis';
@@ -55,9 +54,6 @@ const swagOptions = {
 const docSpecs = swaggerJsDoc(swagOptions);
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(docSpecs));
 
-// Set up cron with Bree
-// const bree = new Bree({ jobs });
-
 // Start server
 app.listen(PORT, async () => {
   logger.info(`--->>> Server is running on http://localhost:${PORT}`);
@@ -67,5 +63,4 @@ app.listen(PORT, async () => {
   await connectToRedis();
   // Connect to routes
   routes(app);
-  // Start database cron jobs
 });
