@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { getWelcomMessage } from '../services/health.services';
 
 export const sendHealthCheck = (req: Request, res: Response) => {

@@ -41,7 +41,6 @@ export default function (app: Express) {
   app.post('/v1/manga/:mangaID', createOneManga);
 
   // NOTE: POST - Update all  manga objects in database
-  // TODO: Create Bree job to call updateAllManga
   app.post('/v1/allmanga/', updateAllManga);
 
   // ========== SECTION: PUT REQUESTS ========== //

@@ -37,10 +37,6 @@ export const updateAllManga = async (req: Request, res: Response) => {
       const completeManga = await createCompleteManga(manga.mangaID);
       if (completeManga) {
         updateManga(manga.mangaID, completeManga);
-        // return res.status(201).json({
-        //   msg: `${manga.mangaID} document updated in MongoDB`,
-        //   data: completeManga,
-        // });
       }
       const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
       await delay(4500);

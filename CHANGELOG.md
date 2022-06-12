@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Released]
 
+## [1.1.1] - 2022-06-12
+### Removed
+- Unused dependencies
+- Reference to RapidAPI in welcome message
+
+### Fixed:
+- Error connecting to Redis Cloud
+
 ## [1.1.0] - 2022-03-31
 ### Added:
 - Manga now include a ratedMature value. This value is true if any chapters are restricted to users over the age of 18. Manga with this flag have chapters that are only availabe online and will not appear in in either the Viz or Shonen Jump app.
