@@ -26,7 +26,7 @@ export const scrapeMangaList = async () => {
   const $ = cheerio.load(html);
   let allManga = $('.o_sortable');
   allManga.each((i, e) => {
-    let title = `${$(e).find('img').attr('alt')}`;
+    let title = `${$(e).find('.type-rg--sm').text().trim()}`;
     let mangaLink = `${$(e).find('a').attr('href')}`;
     let mangaID = mangaLink.replace('/shonenjump/chapters/', '').trim();
     const mangaObject: mangaListObj = {
