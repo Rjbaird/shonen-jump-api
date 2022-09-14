@@ -26,9 +26,9 @@ app.use([
 app.listen(PORT, async () => {
   logger.info(`--->>> Server is running on http://localhost:${PORT}`);
   // Connect to MongoDB
-  await connect();
+  // await connect();
   // Connect to Redis
-  await connectToRedis();
+  // await connectToRedis();
   // Connect to routes
   routes(app);
 });
